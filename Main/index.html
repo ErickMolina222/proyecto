@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+
+  <!-- MDB UI Kit -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="../Registro/style.css"> <!-- El mismo CSS del registro -->
+
+  <!-- Fuente personalizada (opcional) -->
+  <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+  <script>
+    function validarUsuario(input) {
+      const valoresProhibidos = ["admin", "root", "test"];
+      const mensajeError = document.getElementById('mensajeError');
+
+      input.value = input.value.replace(/[^a-zA-Z]/g, '');
+
+      if (valoresProhibidos.includes(input.value.toLowerCase())) {
+        mensajeError.textContent = 'El nombre de usuario ingresado no está permitido.';
+        input.value = '';
+      } else {
+        mensajeError.textContent = '';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get('error');
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (error) {
+        errorMsg.textContent = error === '1' ? "Credenciales incorrectas" : "Campos vacíos";
+      }
+    });
+  </script>
+</head>
+<body>
+
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+
+              <h2 class="text-uppercase text-center mb-5">Iniciar Sesión</h2>
+
+              <p id="errorMsg" class="text-danger text-center"></p>
+
+              <!-- Formulario de inicio de sesión -->
+              <form method="post" action="../Main/controlador.php">
+                <div class="form-outline mb-4">
+                  <input type="text" id="usuario" name="usuario" class="form-control form-control-lg" required oninput="validarUsuario(this)">
+                  <label class="form-label" for="usuario">Nick</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="password" id="contraseña" name="contraseña"  class="form-control form-control-lg" required>
+                  <label class="form-label" for="contraseña">Contraseña</label>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                    Ingresar
+                  </button>
+                </div>
+              </form>
+
+              <!-- Botón de registro -->
+              <p class="text-center text-muted mt-5 mb-0">¿Aun no tienes una cuenta?
+                  <a href="../Registro/index.html" class="fw-bold text-body"><u>Registrate aquí</u></a>
+                </p>
+
+              <p id="mensajeError" class="text-danger mt-3 text-center"></p>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MDB JS -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+
+</body>
+</html>

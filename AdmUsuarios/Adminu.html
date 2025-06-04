@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Administrar Usuario</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<style>
+    a {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 10px 20px;
+        background-color: rgb(255, 0, 0);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    a:hover {
+        background-color: rgb(179, 0, 0);
+    }
+</style>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow-md">
+        <h2 class="text-2xl font-bold text-green-600 mb-4 text-center">Agregar Usuarios</h2>
+
+        <!-- Formulario de agregar usuario -->
+        <form method="post" action="insertar.php">
+            <label>Id_u</label>
+            <input type="text" name="id_u" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Nombre</label>
+            <input type="text" name="nombre" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Edad</label>
+            <input type="number" name="edad" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Nick</label>
+            <input type="text" name="nick" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Correo</label>
+            <input type="text" name="correo" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Contrasena</label>
+            <input type="password" name="pwd" class="w-full p-2 border rounded mb-4" required>
+
+            <label>Perfil</label>
+            <select name="perfil" class="w-full p-2 border rounded mb-4" required>
+                <option value="1">Representante</option>
+                <option value="2">Administrador</option>
+            </select>
+
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600" >Agregar Usuario</button>
+        </form>
+
+        <!-- Botón volver -->
+        <div class="text-center mt-4">
+            <a href="../AdmUsuarios/con_AdminU.php">Volver</a>
+        </div>
+    </div>
+</body>
+</html>

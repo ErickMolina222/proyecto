@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitácora de Actividades</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./public/fontawesome-free-6.7.2-web/css/all.css">
+</head>
+<style>
+    a {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: rgb(255, 0, 0);
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+    
+    a:hover {
+        background-color: rgb(179, 0, 0);
+    }
+</style>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-2xl font-bold text-blue-600 mb-4 text-center">Bitácora de Actividades</h2>
+
+        <!-- Buscador -->
+        <form method="GET" class="mb-6 text-center" onsubmit="return validarNick()">
+            <input type="text" name="buscar_nick" id="buscar_nick" placeholder="Buscar por Nick..." class="px-4 py-2 border rounded shadow focus:outline-none focus:ring-2 focus:ring-blue-500" oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '')" required>
+            <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Buscar
+            </button>
+        </form>
+
+        <!-- Tabla de bitácora -->
+        <div class="bg-white p-6 rounded shadow-md">
+            <div class="relative overflow-x-auto">
+                <table class="w-full text-sm text-left text-gray-500">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3">ID Bitácora</th>
+                            <th class="px-6 py-3">Nick</th>
+                            <th class="px-6 py-3">Fecha</th>
+                            <th class="px-6 py-3">Hora</th>
+                            <th class="px-6 py-3">Acción</th>
+                            <th class="px-6 py-3">ID Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bitacoraTableBody">
+                        <!-- Los datos se cargarán aquí mediante JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container mt-2 text-center">
+            <a href="../Administrador/Admin.html">Volver</a>
+        </div>
+    </div>
+
+    <!-- Script para cargar los datos en la tabla -->
+    <script>
+        // Función para cargar los datos desde el archivo PHP con el parámetro de búsqueda
+        function cargarBitacora() {
+            const filtroNick = new URLSearchParams(window.location.search).get('buscar_nick') || '';
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', `con_bitacora.php?buscar_nick=${filtroNick}`, true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const bitacoras = JSON.parse(xhr.responseText);
+                    const tableBody = document.getElementById('bitacoraTableBody');
+                    tableBody.innerHTML = ''; // Limpiar la tabla antes de agregar nuevas filas
+
+                    // Agregar las filas a la tabla
+                    bitacoras.forEach(log => {
+                        const row = document.createElement('tr');
+                        row.classList.add('bg-white', 'border-b');
+                        row.innerHTML = `
+                            <td class="px-6 py-4">${log.id_b}</td>
+                            <td class="px-6 py-4">${log.nick}</td>
+                            <td class="px-6 py-4">${log.fecha}</td>
+                            <td class="px-6 py-4">${log.hora}</td>
+                            <td class="px-6 py-4">${log.accion}</td>
+                            <td class="px-6 py-4">${log.id_u}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                }
+            };
+            xhr.send();
+        }
+
+        // Llamar a la función para cargar los datos cuando la página cargue
+        window.onload = cargarBitacora;
+
+        // Función para validar el input de búsqueda
+        function validarNick() {
+            const input = document.getElementById('buscar_nick');
+            const regex = /^[a-zA-Z]+$/;
+            if (!regex.test(input.value)) {
+                alert("Por favor, ingresa solo letras (a-z, A-Z) en el campo de búsqueda.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+
+</html>
