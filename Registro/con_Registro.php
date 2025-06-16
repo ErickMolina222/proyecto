@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_param("sisssi", $nombre, $edad, $correo, $nick, $pwd, $perfil);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Registro exitoso'); window.location.href='index.html';</script>";
+        echo "<script>alert('Registro exitoso'); window.location.href='../Main/index.html';</script>";
     } else {
         // Muestra el mensaje de error lanzado desde el procedimiento
         echo "<script>alert('Error: " . $stmt->error . "'); window.history.back();</script>";
