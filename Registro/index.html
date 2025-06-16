@@ -14,6 +14,20 @@
   <!-- Tu estilo personalizado -->
   <link rel="stylesheet" href="style.css">
 
+<script src="../public/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#perfil').change(function () {
+      if ($(this).val() === '3') {
+        $('#car').hide(1000); // Oculta solo la carrera
+      } else {
+        $('#car').show(1000); // Muestra si no es Director
+      }
+    });
+  });
+</script>
+
+
   
 </head>
 <body>
@@ -56,14 +70,30 @@
                   <label class="form-label" for="pwd">Contraseña</label>
                 </div>
 
-                <div data-mdb-input-init class="form-outline mb-4">
-                  <select name="perfil" class="form-select form-select-lg" required>
-                    <option value="">Seleccione un perfil</option>
-                    <option value="1">Representante</option>
-                    <option value="2">Administrador</option>
-                  </select>
-                  
-                </div>
+
+                <!-- Campo de carrera separado -->
+              <div id="car" data-mdb-input-init class="form-outline mb-4">
+                <select name="carrera" class="form-select form-select-lg" required>
+                  <option value="">Seleccione la carrera a la que pertenece</option>
+                  <option value="1">Ingenieria en Sistemas</option>
+                  <option value="2">Ingenieria Industrial</option>
+                  <option value="3">Ingenieria Informatica</option>
+                  <option value="4">Ingenieria Electronica</option>
+                  <option value="5">Ingenieria Electromecanica</option>
+                  <option value="6">Ingenieria en Administracion</option>
+                </select>
+              </div>
+
+              <!-- Campo de perfil -->
+              <div data-mdb-input-init class="form-outline mb-4">
+                <select id="perfil" name="perfil" class="form-select form-select-lg" required>
+                  <option value="">Seleccione un perfil</option>
+                  <option value="1">Docente</option>
+                  <option value="2">Jef@ de carrera</option>
+                  <option value="3">Director</option>
+                </select>
+              </div>
+
 
                 <div class="form-check d-flex justify-content-center mb-5">
                   <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" />

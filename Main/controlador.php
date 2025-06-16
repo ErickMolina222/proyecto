@@ -37,11 +37,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Redirigir según perfil
         switch ($user['id_p']) {
+            case 1:
+                header('Location: ../Administrador/Admin.html');
+                break;
             case 2:
                 header('Location: ../Administrador/Admin.html');
                 break;
-            case 1:
-                header('Location: ../Representante/Representante.html');
+            case 3:
+                header('Location: ../Administrador/Admin.html');
+                break;
+            case 4:
+                header('Location: ../Administrador/Admin.html');
+                break;
+            case 5:
+                header('Location: ../Administrador/Admin.html');
                 break;
             default:
                 header('Location: ../Main/index.html');
