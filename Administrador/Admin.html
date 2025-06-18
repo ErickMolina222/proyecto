@@ -72,9 +72,9 @@
     <!-- Cards de módulos se insertan aquí -->
   </div>
 
-  <div class="mt-4">
+  <div method="post" class="mt-4">
     <a class="boton graficar" href="../Main/crearPdf.php" id="graficar">Graficar</a>
-    <a class="boton cerrar" href="../Main/index.html" id="cerrarSesion">Cerrar sesión</a>
+    <a  class="boton cerrar" href="../Main/" id="cerrarSesion">Cerrar sesión</a>
   </div>
 
   <span id="usuario"></span>
@@ -121,7 +121,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'success') {
-            window.location.href = '../Main/index.html';
+            window.location.href = '../Main/';
           }
         })
         .catch(error => console.error('Error al registrar en la bitácora:', error));

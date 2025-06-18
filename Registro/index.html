@@ -4,21 +4,17 @@
   <meta charset="UTF-8">
   <title>Registro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- MDB UI Kit -->
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"
     rel="stylesheet"
   />
-
-  <!-- Tu estilo personalizado -->
   <link rel="stylesheet" href="style.css">
 
 <script src="../public/jquery-3.7.1.min.js"></script>
 <script>
   $(document).ready(function () {
     $('#perfil').change(function () {
-      if ($(this).val() === '3') {
+      if ($(this).val() === '4') {
         $('#car').hide(1000); // Oculta solo la carrera
       } else {
         $('#car').show(1000); // Muestra si no es Director
@@ -26,9 +22,6 @@
     });
   });
 </script>
-
-
-  
 </head>
 <body>
 
@@ -83,14 +76,14 @@
                   <option value="6">Ingenieria en Administracion</option>
                 </select>
               </div>
-
+            
               <!-- Campo de perfil -->
               <div data-mdb-input-init class="form-outline mb-4">
                 <select id="perfil" name="perfil" class="form-select form-select-lg" required>
                   <option value="">Seleccione un perfil</option>
                   <option value="1">Docente</option>
-                  <option value="2">Jef@ de carrera</option>
-                  <option value="3">Director</option>
+                  <option value="3">Jef@ de carrera</option>
+                  <option value="4">Director</option>
                 </select>
               </div>
 
@@ -109,15 +102,9 @@
                 </div>
 
                 <p class="text-center text-muted mt-5 mb-0">¿Ya tienes una cuenta?
-                  <a href="../Main/index.html" class="fw-bold text-body"><u>Inicia sesión aquí</u></a>
+                  <a method="post" href="../Main/" class="fw-bold text-body"><u>Inicia sesión aquí</u></a>
                 </p>
-
               </form>
-
-              <!-- Botón volver (con clase roja personalizada) -->
-              <!--div class="text-center mt-4">
-                <a href="../Main/index.html" class="btn-volver">Volver</a>
-              </div-->
 
             </div>
           </div>
