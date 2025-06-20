@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Validar sesión
 if (!isset($_SESSION['id_u'])) {
     header("Location: login.php");
     exit;
@@ -55,7 +54,7 @@ $conn->close();
             <i class="fa-solid fa-bars"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="../Administrador/Admin.html">Cerrar sesión</a></li>
+            <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
           </ul>
         </li>
       </ul>
@@ -85,8 +84,16 @@ $conn->close();
             <?php endif; ?>
           </div>
           <div>
-            <button class="btn btn-sm btn-warning me-2">Editar</button>
-            <button class="btn btn-sm btn-danger">Eliminar</button>
+            <button class="btn btn-sm btn-warning me-2"
+              onclick="cargarFormularioEditar(
+                <?php echo $producto['id_pa']; ?>,
+                '<?php echo addslashes($producto['titulo']); ?>',
+                '<?php echo addslashes($producto['Estatus']); ?>',
+                '<?php echo $producto['fecha_inicio']; ?>',
+                '<?php echo $producto['fecha_termino']; ?>'
+              )">Editar</button>
+
+            <button class="btn btn-sm btn-danger" onclick="eliminarArticulo(<?php echo $producto['id_pa']; ?>)">Eliminar</button>
           </div>
         </div>
       <?php endforeach; ?>
@@ -95,10 +102,13 @@ $conn->close();
     <?php endif; ?>
   </div>
 
-  <!-- Formulario para crear artículo -->
+  <!-- Formulario para crear/editar artículo -->
   <div id="formularioArticulo" class="card p-4 d-none">
-    <h3 class="mb-4 text-center">Crear Nuevo Artículo</h3>
-    <form action="conProAc.php" method="POST" enctype="multipart/form-data">
+    <h3 class="mb-4 text-center">Crear / Editar Artículo</h3>
+    <form action="conProAc.php" method="POST" enctype="multipart/form-data" id="formArticulo">
+
+      <input type="hidden" name="id_pa" id="id_pa">
+
       <div class="mb-3">
         <label for="titulo" class="form-label">Título del Artículo</label>
         <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Ingrese el título" required>
@@ -123,9 +133,10 @@ $conn->close();
         <input type="date" class="form-control" name="fechaTermino" id="fechaTermino" required>
       </div>
 
-      <div class="mb-3">
-        <label for="archivoPDF" class="form-label">Subir Documento PDF (Nombrar: nombre_siglascarrera)</label>
-        <input class="form-control" type="file" name="archivoPDF" id="archivoPDF" accept="application/pdf" required>
+      <!-- Campo de archivo solo al crear -->
+      <div class="mb-3" id="divArchivo">
+        <label for="archivoPDF" class="form-label">Subir Documento PDF</label>
+        <input class="form-control" type="file" name="archivoPDF" id="archivoPDF" accept="application/pdf">
       </div>
 
       <button type="submit" class="btn btn-primary">Guardar</button>
@@ -136,19 +147,46 @@ $conn->close();
 </div>
 
 <script>
-  document.getElementById('btnCrear').addEventListener('click', function () {
-    document.getElementById('listaArticulos').classList.add('d-none');
-    document.getElementById('formularioArticulo').classList.remove('d-none');
-    document.getElementById('btnCrear').classList.add('d-none');
-    document.getElementById('listArt').classList.add('d-none');
-  });
+document.getElementById('btnCrear').addEventListener('click', function () {
+  limpiarFormulario();
+  document.getElementById('listaArticulos').classList.add('d-none');
+  document.getElementById('formularioArticulo').classList.remove('d-none');
+  document.getElementById('btnCrear').classList.add('d-none');
+  document.getElementById('listArt').classList.add('d-none');
+});
 
-  document.getElementById('btnCancelar').addEventListener('click', function () {
-    document.getElementById('formularioArticulo').classList.add('d-none');
-    document.getElementById('listaArticulos').classList.remove('d-none');
-    document.getElementById('btnCrear').classList.remove('d-none');
-    document.getElementById('listArt').classList.remove('d-none');
-  });
+document.getElementById('btnCancelar').addEventListener('click', function () {
+  document.getElementById('formularioArticulo').classList.add('d-none');
+  document.getElementById('listaArticulos').classList.remove('d-none');
+  document.getElementById('btnCrear').classList.remove('d-none');
+  document.getElementById('listArt').classList.remove('d-none');
+});
+
+function cargarFormularioEditar(id, titulo, estatus, fechaInicio, fechaTermino) {
+  document.getElementById('id_pa').value = id;
+  document.getElementById('titulo').value = titulo;
+  document.querySelector('select[name="estatus"]').value = (estatus === "Realizado") ? "1" : "2";
+  document.getElementById('fechaInicio').value = fechaInicio;
+  document.getElementById('fechaTermino').value = fechaTermino;
+  document.getElementById('divArchivo').classList.add('d-none');
+
+  document.getElementById('listaArticulos').classList.add('d-none');
+  document.getElementById('formularioArticulo').classList.remove('d-none');
+  document.getElementById('btnCrear').classList.add('d-none');
+  document.getElementById('listArt').classList.add('d-none');
+}
+
+function limpiarFormulario() {
+  document.getElementById('formArticulo').reset();
+  document.getElementById('id_pa').value = "";
+  document.getElementById('divArchivo').classList.remove('d-none');
+}
+
+function eliminarArticulo(id) {
+  if (confirm("¿Estás seguro de eliminar este artículo?")) {
+    window.location.href = 'eliminarPro.php?id=' + id;
+  }
+}
 </script>
 
 </body>
