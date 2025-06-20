@@ -64,7 +64,7 @@ $conn->close();
             <i class="fa-solid fa-bars"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="logout.php">Cerrar sesión</a></li>
+            <li><a class="dropdown-item" href="../Administrador/Admin.html">Cerrar sesión</a></li>
           </ul>
         </li>
       </ul>
@@ -191,7 +191,7 @@ function limpiarFormulario() {
 
 function eliminarArticulo(id) {
   if (confirm("¿Estás seguro de eliminar este artículo?")) {
-    window.location.href = 'eliminar.php?id=' + id;
+    window.location.href = 'eliminarPro.php?id=' + id;
   }
 }
 </script>
