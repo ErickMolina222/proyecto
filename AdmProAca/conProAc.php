@@ -1,33 +1,62 @@
 <?php
-// Directorio donde se guardarán los archivos
-$directorioDestino = "../Documentos/ISC/";
+session_start();
 
-// Verificamos si el directorio existe, si no lo creamos
+if (!isset($_SESSION['id_u'])) {
+    header("Location: login.php");
+    exit;
+}
+
+require_once('../Config/conexion.php');
+$id_usuario = $_SESSION['id_u'];
+$directorioDestino = "../Documentos/ISC/";
 if (!is_dir($directorioDestino)) {
     mkdir($directorioDestino, 0777, true);
 }
 
-// Verificar si se ha enviado un archivo
-if (isset($_FILES["archivoPDF"]) && $_FILES["archivoPDF"]["error"] == 0) {
-    $nombreArchivo = basename($_FILES["archivoPDF"]["name"]);
-    $rutaDestino = $directorioDestino . $nombreArchivo;
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $id_pa = isset($_POST['id_pa']) ? intval($_POST['id_pa']) : 0;
+    $titulo = trim($_POST['titulo']);
+    $estatus = ($_POST['estatus'] == "1") ? "Realizado" : "En proceso";
+    $fechaInicio = $_POST['fechaInicio'];
+    $fechaTermino = $_POST['fechaTermino'];
 
-    // Validar que sea un PDF
-    $tipoArchivo = strtolower(pathinfo($rutaDestino, PATHINFO_EXTENSION));
-    if ($tipoArchivo != "pdf") {
-        echo "Solo se permiten archivos PDF.";
+    // Si estamos actualizando
+    if ($id_pa > 0) {
+        $stmt = $conn->prepare("UPDATE productoaca SET Estatus = ?, titulo = ?, fecha_inicio = ?, fecha_termino = ? WHERE id_pa = ? AND id_usuario = ?");
+        $stmt->bind_param("ssssii", $estatus, $titulo, $fechaInicio, $fechaTermino, $id_pa, $id_usuario);
+        $stmt->execute();
+        $stmt->close();
+        header("Location: index.php");
         exit;
     }
 
-    // Mover el archivo subido
-    if (move_uploaded_file($_FILES["archivoPDF"]["tmp_name"], $rutaDestino)) {
-        echo "El archivo se ha subido correctamente.";
-        // Aquí puedes guardar el resto de los datos en base de datos si lo deseas
-        // $_POST["titulo"], $_POST["estatus"], $_POST["fechaInicio"], $_POST["fechaTermino"]
+    // Si estamos creando un nuevo artículo
+    if (isset($_FILES['archivoPDF']) && $_FILES['archivoPDF']['error'] == 0) {
+        $archivo = $_FILES['archivoPDF'];
+        $nombreArchivo = basename($archivo['name']);
+        $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
+
+        if ($extension != 'pdf') {
+            die("Error: Solo se permiten archivos PDF.");
+        }
+
+        $nuevoNombre = time() . '-' . $nombreArchivo;
+        $rutaDestino = $directorioDestino . $nuevoNombre;
+
+        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+            $stmt = $conn->prepare("INSERT INTO productoaca (Estatus, titulo, fecha_inicio, fecha_termino, urlConsulta, borrado, id_usuario) VALUES (?, ?, ?, ?, ?, 0, ?)");
+            $stmt->bind_param("sssssi", $estatus, $titulo, $fechaInicio, $fechaTermino, $nuevoNombre, $id_usuario);
+            $stmt->execute();
+            $stmt->close();
+            header("Location: index.php");
+            exit;
+        } else {
+            die("Error al subir el archivo.");
+        }
     } else {
-        echo "Hubo un error al subir el archivo.";
+        die("Debe seleccionar un archivo PDF para crear el nuevo artículo.");
     }
-} else {
-    echo "No se ha enviado ningún archivo o ha ocurrido un error.";
 }
+
+$conn->close();
 ?>
