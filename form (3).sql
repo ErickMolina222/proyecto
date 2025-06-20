@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-06-2025 a las 00:34:03
+-- Tiempo de generación: 20-06-2025 a las 05:23:07
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -83,6 +83,16 @@ CREATE TABLE `bitacora` (
   `accion` varchar(50) NOT NULL,
   `id_u` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `bitacora`
+--
+
+INSERT INTO `bitacora` (`id_b`, `nick`, `fecha`, `hora`, `accion`, `id_u`) VALUES
+(115, 'luis', '2025-06-20', '19:05:04', 'INICIO SESION', 1),
+(116, 'luis', '2025-06-20', '05:22:47', 'CERRO SESION', 1),
+(117, 'darina', '2025-06-20', '21:22:51', 'INICIO SESION', 2),
+(118, 'darina', '2025-06-20', '05:22:56', 'CERRO SESION', 2);
 
 -- --------------------------------------------------------
 
@@ -220,11 +230,11 @@ INSERT INTO `persona` (`id_persona`, `nombre`, `edad`, `correo`, `borrado`, `id_
 
 CREATE TABLE `productoaca` (
   `id_pa` int(4) NOT NULL,
-  `Tipo` varchar(12) DEFAULT NULL,
   `Estatus` varchar(20) DEFAULT NULL,
   `titulo` varchar(30) DEFAULT NULL,
   `fecha_inicio` date DEFAULT NULL,
   `fecha_termino` date DEFAULT NULL,
+  `calificacion` float DEFAULT NULL,
   `DocumentoProvatorio` varchar(50) DEFAULT NULL,
   `urlConsulta` varchar(50) DEFAULT NULL,
   `borrado` int(1) DEFAULT NULL,
@@ -324,7 +334,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_b` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=115;
+  MODIFY `id_b` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=119;
 
 --
 -- AUTO_INCREMENT de la tabla `modulo`
