@@ -1,33 +1,66 @@
 <?php
-// Directorio donde se guardarán los archivos
-$directorioDestino = "../Documentos/ISC/";
+session_start();
 
-// Verificamos si el directorio existe, si no lo creamos
+if (!isset($_SESSION['id_u'])) {
+    header("Location: login.php");
+    exit;
+}
+
+require_once('../Config/conexion.php');
+
+$id_usuario = $_SESSION['id_u'];
+
+// Directorio de almacenamiento
+$directorioDestino = "../Documentos/ISC/";
 if (!is_dir($directorioDestino)) {
     mkdir($directorioDestino, 0777, true);
 }
 
-// Verificar si se ha enviado un archivo
-if (isset($_FILES["archivoPDF"]) && $_FILES["archivoPDF"]["error"] == 0) {
-    $nombreArchivo = basename($_FILES["archivoPDF"]["name"]);
-    $rutaDestino = $directorioDestino . $nombreArchivo;
+// Validar datos del formulario
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $titulo = trim($_POST['titulo']);
+    $estatus = ($_POST['estatus'] == "1") ? "Realizado" : "En proceso";
+    $fechaInicio = $_POST['fechaInicio'];
+    $fechaTermino = $_POST['fechaTermino'];
 
-    // Validar que sea un PDF
-    $tipoArchivo = strtolower(pathinfo($rutaDestino, PATHINFO_EXTENSION));
-    if ($tipoArchivo != "pdf") {
-        echo "Solo se permiten archivos PDF.";
-        exit;
-    }
+    // Validar archivo
+    if (isset($_FILES['archivoPDF']) && $_FILES['archivoPDF']['error'] == 0) {
+        $archivo = $_FILES['archivoPDF'];
+        $nombreArchivo = basename($archivo['name']);
+        $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
 
-    // Mover el archivo subido
-    if (move_uploaded_file($_FILES["archivoPDF"]["tmp_name"], $rutaDestino)) {
-        echo "El archivo se ha subido correctamente.";
-        // Aquí puedes guardar el resto de los datos en base de datos si lo deseas
-        // $_POST["titulo"], $_POST["estatus"], $_POST["fechaInicio"], $_POST["fechaTermino"]
+        if ($extension != 'pdf') {
+            die("Error: Solo se permite subir archivos PDF.");
+        }
+
+        // Renombrar el archivo para evitar sobrescrituras (por fecha)
+        $nuevoNombre = time() . '-' . $nombreArchivo;
+        $rutaDestino = $directorioDestino . $nuevoNombre;
+
+        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+            // Guardamos en la base de datos
+            $stmt = $conn->prepare("INSERT INTO productoaca (Estatus, titulo, fecha_inicio, fecha_termino, urlConsulta, borrado, id_usuario) 
+                                    VALUES (?, ?, ?, ?, ?, 0, ?)");
+            $stmt->bind_param("sssssi", $estatus, $titulo, $fechaInicio, $fechaTermino, $nuevoNombre, $id_usuario);
+
+            if ($stmt->execute()) {
+                // Redirige de vuelta al index después de guardar
+                header("Location: index.php");
+                exit;
+            } else {
+                echo "Error al insertar en la base de datos: " . $stmt->error;
+            }
+
+            $stmt->close();
+        } else {
+            echo "Error al subir el archivo.";
+        }
     } else {
-        echo "Hubo un error al subir el archivo.";
+        echo "Debe seleccionar un archivo PDF.";
     }
 } else {
-    echo "No se ha enviado ningún archivo o ha ocurrido un error.";
+    echo "Acceso inválido al formulario.";
 }
+
+$conn->close();
 ?>
