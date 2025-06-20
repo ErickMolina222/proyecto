@@ -10,6 +10,19 @@ require_once('../Config/conexion.php');
 
 $id_usuario = $_SESSION['id_u'];
 
+// Mapear la carrera al directorio
+$mapaDirectorios = [
+    "Ingenieria en Sistemas" => "ISC",
+    "Ingenieria Industrial" => "IIND",
+    "Ingenieria Informatica" => "INF",
+    "Ingenieria Electronica" => "ELEC",
+    "Ingenieria Electromecanica" => "ELECM",
+    "Ingenieria en Administracion" => "ADMI"
+];
+
+$carrera = $_SESSION['carrera'];
+$carpetaCarrera = isset($mapaDirectorios[$carrera]) ? $mapaDirectorios[$carrera] : 'Desconocido';
+
 $sql = "SELECT * FROM productoaca WHERE id_usuario = ? AND borrado = 0";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
@@ -33,9 +46,6 @@ $conn->close();
     <title>Productos Académicos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="../public/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
@@ -80,7 +90,7 @@ $conn->close();
             <p class="mb-1">Fecha de Término: <?php echo $producto['fecha_termino']; ?></p>
             <p class="mb-1">Calificación: <?php echo isset($producto['calificacion']) ? $producto['calificacion'] : 'N/A'; ?>/10.00</p>
             <?php if (!empty($producto['urlConsulta'])): ?>
-              <a href="../Documentos/ISC/<?php echo $producto['urlConsulta']; ?>" target="_blank">Ver Documento</a>
+              <a href="../Documentos/<?php echo $carpetaCarrera; ?>/<?php echo $producto['urlConsulta']; ?>" target="_blank">Ver Documento</a>
             <?php endif; ?>
           </div>
           <div>
@@ -102,7 +112,7 @@ $conn->close();
     <?php endif; ?>
   </div>
 
-  <!-- Formulario para crear/editar artículo -->
+  <!-- Formulario -->
   <div id="formularioArticulo" class="card p-4 d-none">
     <h3 class="mb-4 text-center">Crear / Editar Artículo</h3>
     <form action="conProAc.php" method="POST" enctype="multipart/form-data" id="formArticulo">
@@ -110,12 +120,12 @@ $conn->close();
       <input type="hidden" name="id_pa" id="id_pa">
 
       <div class="mb-3">
-        <label for="titulo" class="form-label">Título del Artículo</label>
-        <input type="text" class="form-control" name="titulo" id="titulo" placeholder="Ingrese el título" required>
+        <label for="titulo" class="form-label">Título</label>
+        <input type="text" class="form-control" name="titulo" id="titulo" required>
       </div>
 
       <div class="mb-3">
-        <label class="form-label">Estado del Artículo</label>
+        <label>Estado</label>
         <select name="estatus" class="form-select" required>
           <option value="">Seleccione el estado</option>
           <option value="1">Realizado</option>
@@ -124,18 +134,17 @@ $conn->close();
       </div>
 
       <div class="mb-3">
-        <label for="fechaInicio" class="form-label">Fecha de Inicio</label>
+        <label>Fecha de Inicio</label>
         <input type="date" class="form-control" name="fechaInicio" id="fechaInicio" required>
       </div>
 
       <div class="mb-3">
-        <label for="fechaTermino" class="form-label">Fecha de Término</label>
+        <label>Fecha de Término</label>
         <input type="date" class="form-control" name="fechaTermino" id="fechaTermino" required>
       </div>
 
-      <!-- Campo de archivo solo al crear -->
-      <div class="mb-3" id="divArchivo">
-        <label for="archivoPDF" class="form-label">Subir Documento PDF</label>
+      <div class="mb-3">
+        <label>Subir Documento PDF</label>
         <input class="form-control" type="file" name="archivoPDF" id="archivoPDF" accept="application/pdf">
       </div>
 
@@ -178,12 +187,11 @@ function cargarFormularioEditar(id, titulo, estatus, fechaInicio, fechaTermino) 
 function limpiarFormulario() {
   document.getElementById('formArticulo').reset();
   document.getElementById('id_pa').value = "";
-  
 }
 
 function eliminarArticulo(id) {
   if (confirm("¿Estás seguro de eliminar este artículo?")) {
-    window.location.href = 'eliminarPro.php?id=' + id;
+    window.location.href = 'eliminar.php?id=' + id;
   }
 }
 </script>

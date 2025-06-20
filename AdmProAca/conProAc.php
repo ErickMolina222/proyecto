@@ -8,12 +8,32 @@ if (!isset($_SESSION['id_u'])) {
 
 require_once('../Config/conexion.php');
 $id_usuario = $_SESSION['id_u'];
-$directorioDestino = "../Documentos/ISC/";
+
+// Mapeo carrera → carpeta
+$mapaDirectorios = [
+    "Ingenieria en Sistemas" => "ISC",
+    "Ingenieria Industrial" => "IIND",
+    "Ingenieria Informatica" => "INF",
+    "Ingenieria Electronica" => "ELEC",
+    "Ingenieria Electromecanica" => "ELECM",
+    "Ingenieria en Administracion" => "ADMI"
+];
+
+$carrera = $_SESSION['carrera'];
+
+if (!isset($mapaDirectorios[$carrera])) {
+    die("Error: Carrera no reconocida.");
+}
+
+$carpetaCarrera = $mapaDirectorios[$carrera];
+$directorioDestino = "../Documentos/$carpetaCarrera/";
+
 if (!is_dir($directorioDestino)) {
     mkdir($directorioDestino, 0777, true);
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
     $id_pa = isset($_POST['id_pa']) ? intval($_POST['id_pa']) : 0;
     $titulo = trim($_POST['titulo']);
     $estatus = ($_POST['estatus'] == "1") ? "Realizado" : "En proceso";
@@ -23,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Si estamos actualizando
     if ($id_pa > 0) {
 
-        // Verificamos si subió un nuevo PDF
+        // Si sube un nuevo archivo PDF
         if (isset($_FILES['archivoPDF']) && $_FILES['archivoPDF']['error'] == 0) {
             $archivo = $_FILES['archivoPDF'];
             $nombreArchivo = basename($archivo['name']);
@@ -37,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $rutaDestino = $directorioDestino . $nuevoNombre;
 
             if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-                // Primero obtenemos el archivo anterior para eliminarlo
+                // Borramos el PDF anterior
                 $stmtOld = $conn->prepare("SELECT urlConsulta FROM productoaca WHERE id_pa = ? AND id_usuario = ?");
                 $stmtOld->bind_param("ii", $id_pa, $id_usuario);
                 $stmtOld->execute();
@@ -50,14 +70,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 $stmtOld->close();
 
-                // Actualizamos todos los campos incluyendo el nuevo PDF
                 $stmt = $conn->prepare("UPDATE productoaca SET Estatus = ?, titulo = ?, fecha_inicio = ?, fecha_termino = ?, urlConsulta = ? WHERE id_pa = ? AND id_usuario = ?");
                 $stmt->bind_param("ssssssi", $estatus, $titulo, $fechaInicio, $fechaTermino, $nuevoNombre, $id_pa, $id_usuario);
             } else {
                 die("Error al subir el nuevo archivo PDF.");
             }
         } else {
-            // No se subió nuevo archivo, solo actualizamos el resto
+            // Si no sube nuevo archivo, solo actualizamos los demás campos
             $stmt = $conn->prepare("UPDATE productoaca SET Estatus = ?, titulo = ?, fecha_inicio = ?, fecha_termino = ? WHERE id_pa = ? AND id_usuario = ?");
             $stmt->bind_param("ssssii", $estatus, $titulo, $fechaInicio, $fechaTermino, $id_pa, $id_usuario);
         }
@@ -68,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     }
 
-    // Si estamos creando un nuevo artículo
+    // Si estamos creando uno nuevo
     if (isset($_FILES['archivoPDF']) && $_FILES['archivoPDF']['error'] == 0) {
         $archivo = $_FILES['archivoPDF'];
         $nombreArchivo = basename($archivo['name']);
