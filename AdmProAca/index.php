@@ -46,12 +46,15 @@ $conn->close();
     <title>Productos Académicos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</head>
-<body>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../public/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  </head>
+<body class="pro-aca" >
 
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
   <div class="container-fluid">
-    <a class="navbar-brand">Productos Académicos</a>
+    <a id class="navbar-brand">Productos Académicos</a>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item me-3">
@@ -76,7 +79,7 @@ $conn->close();
   <h3 class="mb-4 text-center" id="listArt">Lista de Productos Académicos</h3>
 
   <div class="mb-4 text-end">
-    <button id="btnCrear" class="btn btn-success">Crear Artículo</button>
+    <button id="btnCrear" class="btn btn-success"><i class="fa-solid fa-plus" style="color: #ffffff;"></i> Crear Artículo</button>
   </div>
 
   <div id="listaArticulos" class="list-group">
@@ -94,16 +97,16 @@ $conn->close();
             <?php endif; ?>
           </div>
           <div>
-            <button class="btn btn-sm btn-warning me-2"
+            <button class="btn btn-sm me-2"
               onclick="cargarFormularioEditar(
                 <?php echo $producto['id_pa']; ?>,
                 '<?php echo addslashes($producto['titulo']); ?>',
                 '<?php echo addslashes($producto['Estatus']); ?>',
                 '<?php echo $producto['fecha_inicio']; ?>',
                 '<?php echo $producto['fecha_termino']; ?>'
-              )">Editar</button>
+              )"><i class="fa-solid fa-file-pen fa-xl" style="color: #018df9;"></i></button>
 
-            <button class="btn btn-sm btn-danger" onclick="eliminarArticulo(<?php echo $producto['id_pa']; ?>)">Eliminar</button>
+            <button class="btn btn-sm" onclick="eliminarArticulo(<?php echo $producto['id_pa']; ?>)"><i class="fa-solid fa-trash fa-xl" style="color: #ff1900;"></i></button>
           </div>
         </div>
       <?php endforeach; ?>
@@ -148,7 +151,7 @@ $conn->close();
         <input class="form-control" type="file" name="archivoPDF" id="archivoPDF" accept="application/pdf">
       </div>
 
-      <button type="submit" class="btn btn-primary">Guardar</button>
+      <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk" style="color: #ffffff;"></i> Guardar</button>
       <button type="button" id="btnCancelar" class="btn btn-secondary">Cancelar</button>
     </form>
   </div>
