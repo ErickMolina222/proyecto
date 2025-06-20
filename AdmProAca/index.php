@@ -168,7 +168,6 @@ function cargarFormularioEditar(id, titulo, estatus, fechaInicio, fechaTermino) 
   document.querySelector('select[name="estatus"]').value = (estatus === "Realizado") ? "1" : "2";
   document.getElementById('fechaInicio').value = fechaInicio;
   document.getElementById('fechaTermino').value = fechaTermino;
-  document.getElementById('divArchivo').classList.add('d-none');
 
   document.getElementById('listaArticulos').classList.add('d-none');
   document.getElementById('formularioArticulo').classList.remove('d-none');
@@ -179,7 +178,7 @@ function cargarFormularioEditar(id, titulo, estatus, fechaInicio, fechaTermino) 
 function limpiarFormulario() {
   document.getElementById('formArticulo').reset();
   document.getElementById('id_pa').value = "";
-  document.getElementById('divArchivo').classList.remove('d-none');
+  
 }
 
 function eliminarArticulo(id) {
