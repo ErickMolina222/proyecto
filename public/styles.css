@@ -15,4 +15,18 @@
   color: white;
 }
 
+.a-volver {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: rgb(255, 0, 0);
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+    
+.a-volver:hover {
+  background-color: rgb(179, 0, 0);
+}
+
 
