@@ -1,0 +1,100 @@
+/* Fondo general con tu gradiente */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #84fab0;
+    background: -webkit-linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
+    background: linear-gradient(to right, rgba(132, 250, 176, 0.5), rgba(143, 211, 244, 0.5));
+    min-height: 100vh;
+}
+
+/* Estilo del iframe contenedor */
+iframe {
+    width: 100vw;
+    height: 90vh;
+    border: none;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+/* Título centrado */
+h2 {
+    color: #333;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+/* Tabla moderna */
+table {
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
+    width: 95%;
+    max-width: 1400px;
+}
+
+.table thead th {
+    background: linear-gradient(to right, #4b6cb7, #182848);
+    color: white;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 15px;
+    padding: 15px;
+}
+
+.table tbody td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8f8f8;
+}
+
+.table-striped tbody tr:hover {
+    background-color: #edf6f9;
+}
+
+/* Checkbox más visible */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Botón actualizar más suave */
+button.btn-primary {
+    border-radius: 20px;
+    padding: 6px 20px;
+    font-weight: bold;
+    font-size: 14px;
+    background: linear-gradient(to right, #56ccf2, #2f80ed);
+    border: none;
+    transition: 0.3s;
+}
+
+button.btn-primary:hover {
+    background: linear-gradient(to right, #2f80ed, #56ccf2);
+    transform: scale(1.05);
+}
+
+/* Botón volver */
+a.btn-volver {
+    margin-top: 25px;
+    padding: 10px 30px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    color: white;
+    font-weight: bold;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+a.btn-volver:hover {
+    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    transform: scale(1.05);
+}

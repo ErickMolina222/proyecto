@@ -12,21 +12,17 @@ while ($mod = $modulos->fetch_assoc()) {
     $modulos_array[] = $mod;
 }
 
-// REGISTRAR INGRESO A ADMINMODULOS EN BITÁCORA (una sola vez por sesión)
-if (!isset($_SESSION['ingreso_ADMINMODULOS'])) {
-    $accion = 'INGRESO A ADMINMODULOS';
-    $fecha = date('Y-m-d');
-    $nick = $_SESSION['nick'];
-    $id_u = $_SESSION['id_u'];
+// REGISTRAR INGRESO A ADMINMODULOS EN BITÁCORA (cada ingreso)
+$accion = 'INGRESO A ADMINMODULOS';
+$fecha = date('Y-m-d');
+$nick = $_SESSION['nick'];
+$id_u = $_SESSION['id_u'];
 
-    $stmt_log = $conn->prepare("INSERT INTO bitacora (nick, fecha, hora, accion, id_u) VALUES (?, ?, CURTIME(), ?, ?)");
-    $stmt_log->bind_param("sssi", $nick, $fecha, $accion, $id_u);
-    $stmt_log->execute();
-    $stmt_log->close();
+$stmt_log = $conn->prepare("INSERT INTO bitacora (nick, fecha, hora, accion, id_u) VALUES (?, ?, CURTIME(), ?, ?)");
+$stmt_log->bind_param("sssi", $nick, $fecha, $accion, $id_u);
+$stmt_log->execute();
+$stmt_log->close();
 
-    // Marcar como registrado para esta sesión
-    $_SESSION['ingreso_ADMINMODULOS'] = true;
-}
 
 // Procesar actualizaciones
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
@@ -45,30 +41,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
         $stmt_ins->execute();
     }
 
-    header("Location: con_Modulos.php");
+    header("Location: ad_modulos.php");
     exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Módulos por Perfil</title>
+    <title>Administración de Módulos por Perfil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Winky Sans', sans-serif;
-        }
-        table th, table td {
-            vertical-align: middle;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="../public/modulos.css">
 </head>
-<body class="container py-4">
+<body class="py-4">
+
+    <h2 class="mb-4 text-center">Administración de Módulos por Perfil</h2>
+
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -93,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
                     }
                 ?>
                 <tr>
-                    <form method="POST" action="con_Modulos.php">
+                    <form method="POST" action="ad_modulos.php">
                         <td><strong><?= htmlspecialchars($perfil['Nombre']) ?></strong></td>
                         <?php foreach ($modulos_array as $mod): ?>
                             <td>
@@ -110,6 +99,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
             <?php endwhile; ?>
         </tbody>
     </table>
+
+    <div class="container mt-3 text-center">
+        <a href="../Administrador/Admin.html" class="btn-volver">Volver</a>
+    </div>
+
 </body>
 </html>
 
