@@ -24,7 +24,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id_u'] = $user['id_u'];
         $_SESSION['nick'] = $user['Nick'];
 
-        // REGISTRAR INICIO DE SESIÓN EN BITÁCORA (aquí mismo)
+        // 🚩 NUEVA CONSULTA: OBTENER LA CARRERA
+        $id_usuario = $user['id_u'];
+
+        $stmt_carrera = $conn->prepare("
+            SELECT c.nombreCa 
+            FROM persona p
+            JOIN carrera c ON p.id_carrera = c.id_ca
+            WHERE p.id_u = ?
+        ");
+        $stmt_carrera->bind_param("i", $id_usuario);
+        $stmt_carrera->execute();
+        $result_carrera = $stmt_carrera->get_result();
+
+        if ($result_carrera->num_rows == 1) {
+            $row_carrera = $result_carrera->fetch_assoc();
+            $_SESSION['carrera'] = $row_carrera['nombreCa'];  // 🔥 Guardamos la carrera en la sesión
+        } else {
+            $_SESSION['carrera'] = null; // Por seguridad
+        }
+
+        $stmt_carrera->close();
+
+        // REGISTRAR INICIO DE SESIÓN EN BITÁCORA
         $accion = 'INICIO SESION';
         $fecha = date('Y-m-d');
         $nick = $_SESSION['nick'];
@@ -38,17 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Redirigir según perfil
         switch ($user['id_p']) {
             case 1:
-                header('Location: ../Administrador/Admin.html');
-                break;
             case 2:
-                header('Location: ../Administrador/Admin.html');
-                break;
             case 3:
-                header('Location: ../Administrador/Admin.html');
-                break;
             case 4:
-                header('Location: ../Administrador/Admin.html');
-                break;
             case 5:
                 header('Location: ../Administrador/Admin.html');
                 break;
@@ -57,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit();
     } else {
-        header('Location: ../Main/index.html?error=1'); // Credenciales incorrectas
+        header('Location: ../Main/index.html?error=1');
         exit();
     }
 }
