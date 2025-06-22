@@ -4,26 +4,32 @@
   <meta charset="UTF-8">
   <title>Registro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+  integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../public/styles.css">
+  <script src="../public/jquery-3.7.1.min.js"></script>
 
-<script src="../public/jquery-3.7.1.min.js"></script>
-<script>
-  $(document).ready(function () {
-    $('#perfil').change(function () {
-      if ($(this).val() === '4') {
-        $('#car').hide(1000); // Oculta solo la carrera
-      } else {
-        $('#car').show(1000); // Muestra si no es Director
-      }
+  <script>
+    $(document).ready(function () {
+      // Animación de entrada
+      $('.card').hide().fadeIn(1500);
+
+      // Mostrar/Ocultar carrera según perfil
+      $('#perfil').change(function () {
+        if ($(this).val() === '4') {
+          $('#car').hide(1000);
+        } else {
+          $('#car').show(1000);
+        }
+      });
     });
-  });
-</script>
+  </script>
+
 </head>
-<body>
+<body class="pro-aca">
 
 <section class="vh-100 bg-image"
   style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
@@ -34,8 +40,8 @@
           <div class="card" style="border-radius: 15px;">
             <div class="card-body p-5">
               <h2 class="text-uppercase text-center mb-5">Crea una cuenta</h2>
+              <h2 class="text-center"><i class="fa-solid fa-user-plus fa-bounce"></i></h2>
 
-              <!-- Formulario con campos agregados -->
               <form method="post" action="con_Registro.php">
 
                 <div data-mdb-input-init class="form-outline mb-4">
@@ -63,35 +69,31 @@
                   <label class="form-label" for="pwd">Contraseña</label>
                 </div>
 
+                <div id="car" data-mdb-input-init class="form-outline mb-4">
+                  <select name="carrera" class="form-select form-select-lg" required>
+                    <option value="">Seleccione la carrera a la que pertenece</option>
+                    <option value="1">Ingenieria en Sistemas</option>
+                    <option value="2">Ingenieria Industrial</option>
+                    <option value="3">Ingenieria Informatica</option>
+                    <option value="4">Ingenieria Electronica</option>
+                    <option value="5">Ingenieria Electromecanica</option>
+                    <option value="6">Ingenieria en Administracion</option>
+                  </select>
+                </div>
 
-                <!-- Campo de carrera separado -->
-              <div id="car" data-mdb-input-init class="form-outline mb-4">
-                <select name="carrera" class="form-select form-select-lg" required>
-                  <option value="">Seleccione la carrera a la que pertenece</option>
-                  <option value="1">Ingenieria en Sistemas</option>
-                  <option value="2">Ingenieria Industrial</option>
-                  <option value="3">Ingenieria Informatica</option>
-                  <option value="4">Ingenieria Electronica</option>
-                  <option value="5">Ingenieria Electromecanica</option>
-                  <option value="6">Ingenieria en Administracion</option>
-                </select>
-              </div>
-            
-              <!-- Campo de perfil -->
-              <div data-mdb-input-init class="form-outline mb-4">
-                <select id="perfil" name="perfil" class="form-select form-select-lg" required>
-                  <option value="">Seleccione un perfil</option>
-                  <option value="1">Docente</option>
-                  <option value="3">Jef@ de carrera</option>
-                  <option value="4">Director</option>
-                </select>
-              </div>
-
+                <div data-mdb-input-init class="form-outline mb-4">
+                  <select id="perfil" name="perfil" class="form-select form-select-lg" required>
+                    <option value="">Seleccione un perfil</option>
+                    <option value="1">Docente</option>
+                    <option value="3">Jef@ de carrera</option>
+                    <option value="4">Director</option>
+                  </select>
+                </div>
 
                 <div class="form-check d-flex justify-content-center mb-5">
                   <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" />
                   <label class="form-check-label" for="form2Example3cg">
-                    I agree all statements in <a href="#!" class="text-body"><u>Terms of service</u></a>
+                    Acepto los <a href="#!" class="text-body"><u>términos de servicio</u></a>
                   </label>
                 </div>
 
@@ -102,7 +104,7 @@
                 </div>
 
                 <p class="text-center text-muted mt-5 mb-0">¿Ya tienes una cuenta?
-                  <a method="post" href="../Main/" class="fw-bold text-body"><u>Inicia sesión aquí</u></a>
+                  <a href="../Main/" class="fw-bold text-body"><u>Inicia sesión aquí</u></a>
                 </p>
               </form>
 
@@ -114,12 +116,7 @@
   </div>
 </section>
 
-<!-- MDB JS -->
-<script
-  type="text/javascript"
-  src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"
-></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
 
 </body>
 </html>
-
