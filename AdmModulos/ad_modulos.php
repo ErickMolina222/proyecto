@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar'])) {
 </head>
 <body class="py-4">
 
-    <h2 class="mb-4 text-center">Administración de Módulos por Perfil</h2>
+    <h2 class="font-bold text-blue-600 mb-4 text-center">Administración de Módulos por Perfil</h2>
 
     <table class="table table-bordered table-striped">
         <thead class="table-dark">

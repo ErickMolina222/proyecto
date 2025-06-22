@@ -1,120 +1,132 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Productos Académicos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../public/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="pro-aca">
 
-    <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand">Productos Académicos</a>
-        </div>
-    </nav>
-
-    <div class="container mt-5">
-        <h3 class="mb-4 text-center">Lista de Productos Académicos</h3>
-
-        <div id="listaArticulos" class="list-group">
-            <!-- Aquí se carga dinámicamente -->
-        </div>
-
-        <!-- Formulario de calificación -->
-        <div id="formCalificar" class="card p-4 d-none">
-            <h3 class="mb-4 text-center">Calificar Artículo</h3>
-            <form Action="calificar.php" id="formCalificacion">
-                <input type="hidden" name="id_pa" id="id_pa_calificar">
-                <div class="mb-3">
-                    <label for="calificacion" class="form-label">Calificación (0 - 10)</label>
-                    <input type="number" class="form-control" name="calificacion" id="calificacion" step="0.01" min="0" max="10" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Guardar Calificación</button>
-                <button type="button" class="btn btn-secondary" onclick="cerrarCalificar()">Cancelar</button>
-            </form>
-        </div>
-
+<nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand">Productos Académicos</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item me-3">
+          <span id="infoUsuario" class="navbar-text text-white"></span>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fa-solid fa-bars"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="../Administrador/Admin.html">Volver</a></li>
+          </ul>
+        </li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            cargarArticulos();
+<div class="container mt-5">
+    <h3 class="mb-4 text-center">Lista de Productos Académicos</h3>
+
+    <div id="listaArticulos" class="list-group"></div>
+
+    <!-- Formulario de calificación -->
+    <div id="formCalificar" class="card p-4 d-none">
+        <h3 class="mb-4 text-center">Calificar Artículo</h3>
+        <form action="calificar.php" id="formCalificacion">
+            <input type="hidden" name="id_pa" id="id_pa_calificar">
+            <div class="mb-3">
+                <label class="form-label">Calificación (0 - 10)</label>
+                <input type="number" class="form-control" name="calificacion" id="calificacion" step="0.01" min="0" max="10" required>
+            </div>
+            <button type="submit" class="btn-guardar-articulo"><i class="fa-solid fa-floppy-disk"></i> Guardar Calificación</button>
+            <button type="button" class="btn-cancelar-articulo" onclick="cerrarCalificar()"><i class="fa-solid fa-xmark-circle"></i> Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    cargarArticulos();
+});
+
+function cargarArticulos() {
+    fetch('conEva.php')
+        .then(response => {
+            if (!response.ok) throw new Error("No autorizado o error de servidor");
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('infoUsuario').innerHTML = `Jef@ de carrera: ${data.nick}`;
+            const lista = document.getElementById('listaArticulos');
+            lista.innerHTML = '';
+
+            if (data.productos.length === 0) {
+                lista.innerHTML = '<div class="alert alert-info">No se tienen productos registrados aún.</div>';
+                return;
+            }
+
+            data.productos.forEach(producto => {
+                const item = document.createElement('div');
+                item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                item.innerHTML = `
+                  <div>
+                    <h5>${producto.titulo}</h5>
+                    <p>Estado: ${producto.Estatus}</p>
+                    <p>Fecha de Inicio: ${producto.fecha_inicio}</p>
+                    <p>Fecha de Término: ${producto.fecha_termino}</p>
+                    <p>Calificación: ${producto.calificacion ?? 'N/A'}/10.00</p>
+                    ${producto.urlConsulta ? `<a href="../Documentos/${producto.carpeta}/${producto.urlConsulta}" target="_blank" class="btn-ver-documento"><i class="fa-solid fa-file-lines"></i> Ver Documento</a>` : ''}
+                  </div>
+                  <div>
+                    <button class="btn-calificar-articulo" onclick="abrirCalificar(${producto.id_pa})">
+                      <i class="fa-solid fa-star"></i> Calificar
+                    </button>
+                  </div>
+                `;
+                lista.appendChild(item);
+            });
+        })
+        .catch(err => {
+            document.getElementById('listaArticulos').innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
         });
-
-        function cargarArticulos() {
-            fetch('conEva.php')
-                .then(response => {
-                    if (!response.ok) throw new Error("No autorizado o error de servidor");
-                    return response.json();
-                })
-                .then(data => {
-                        const lista = document.getElementById('listaArticulos');
-                        lista.innerHTML = '';
-
-                        if (data.length === 0) {
-                            lista.innerHTML = '<div class="alert alert-info">No tienes productos registrados aún.</div>';
-                            return;
-                        }
-
-                        data.forEach(producto => {
-                                    const item = document.createElement('div');
-                                    item.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-                                    item.innerHTML = `
-          <div>
-            <h5>${producto.titulo}</h5>
-            <p>Estado: ${producto.Estatus}</p>
-            <p>Fecha de Inicio: ${producto.fecha_inicio}</p>
-            <p>Fecha de Término: ${producto.fecha_termino}</p>
-            <p>Calificación: ${producto.calificacion ?? 'N/A'}/10.00</p>
-            ${producto.urlConsulta ? `<a href="../Documentos/ISC/${producto.urlConsulta}" target="_blank">Ver Documento</a>` : ''}
-          </div>
-          <div>
-            <button class="btn btn-sm btn-success" onclick="abrirCalificar(${producto.id_pa})">Calificar</button>
-          </div>
-        `;
-        lista.appendChild(item);
-      });
-    })
-    .catch(err => {
-      document.getElementById('listaArticulos').innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
-    });
 }
 
 function abrirCalificar(id) {
-  document.getElementById('id_pa_calificar').value = id;
-  document.getElementById('listaArticulos').classList.add('d-none');
-  document.getElementById('formCalificar').classList.remove('d-none');
+    document.getElementById('id_pa_calificar').value = id;
+    document.getElementById('listaArticulos').classList.add('d-none');
+    document.getElementById('formCalificar').classList.remove('d-none');
 }
 
 function cerrarCalificar() {
-  document.getElementById('formCalificar').classList.add('d-none');
-  document.getElementById('listaArticulos').classList.remove('d-none');
+    document.getElementById('formCalificar').classList.add('d-none');
+    document.getElementById('listaArticulos').classList.remove('d-none');
 }
 
-// Captura del submit del formulario
 document.getElementById('formCalificacion').addEventListener('submit', e => {
-  e.preventDefault();
-
-  const formData = new FormData(e.target);
-  fetch('calificar.php', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => {
-    if (!res.ok) throw new Error("Error al calificar");
-    return res.text();
-  })
-  .then(() => {
-    cerrarCalificar();
-    cargarArticulos();
-  })
-  .catch(err => alert(err.message));
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    fetch('calificar.php', { method: 'POST', body: formData })
+    .then(res => {
+        if (!res.ok) throw new Error("Error al calificar");
+        return res.text();
+    })
+    .then(() => {
+        cerrarCalificar();
+        cargarArticulos();
+    })
+    .catch(err => alert(err.message));
 });
-    </script>
+</script>
 
 </body>
-
 </html>
