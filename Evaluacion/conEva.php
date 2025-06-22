@@ -41,15 +41,17 @@ if ($id_perfil == 3) {
     if ($rowCarrera = $resultCarrera->fetch_assoc()) {
         $id_carrera = $rowCarrera['id_carrera'];
 
-        $sql = "
-            SELECT pa.id_pa, pa.titulo, pa.Estatus, pa.fecha_inicio, pa.fecha_termino, 
-                   pa.calificacion, pa.urlConsulta, c.nombreCa
-            FROM productoaca pa
-            INNER JOIN usuario u ON pa.id_usuario = u.id_u
-            INNER JOIN persona p ON u.id_u = p.id_u
-            INNER JOIN carrera c ON p.id_carrera = c.id_ca
-            WHERE p.id_carrera = ? AND pa.borrado = 0
-        ";
+        // Agregamos p.nombre AS docente
+            $sql = "
+                SELECT pa.id_pa, pa.titulo, pa.Estatus, pa.fecha_inicio, pa.fecha_termino, 
+                    pa.calificacion, pa.urlConsulta, c.nombreCa, p.nombre AS docente
+                FROM productoaca pa
+                INNER JOIN usuario u ON pa.id_usuario = u.id_u
+                INNER JOIN persona p ON u.id_u = p.id_u
+                INNER JOIN carrera c ON p.id_carrera = c.id_ca
+                WHERE p.id_carrera = ? AND pa.borrado = 0
+            ";
+
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $id_carrera);
     } else {
@@ -64,13 +66,14 @@ if ($id_perfil == 3) {
     // Usuario normal
     $sql = "
         SELECT pa.id_pa, pa.titulo, pa.Estatus, pa.fecha_inicio, pa.fecha_termino, 
-               pa.calificacion, pa.urlConsulta, c.nombreCa
+            pa.calificacion, pa.urlConsulta, c.nombreCa, p.nombre AS docente
         FROM productoaca pa
         INNER JOIN usuario u ON pa.id_usuario = u.id_u
         INNER JOIN persona p ON u.id_u = p.id_u
         INNER JOIN carrera c ON p.id_carrera = c.id_ca
         WHERE pa.id_usuario = ? AND pa.borrado = 0
     ";
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $id_usuario);
 }

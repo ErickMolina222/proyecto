@@ -24,8 +24,25 @@ if ($idCarrera) $filtros[] = "p.id_carrera = $idCarrera";
 if ($idProfesor) $filtros[] = "u.id_u = $idProfesor";
 $where = count($filtros) > 0 ? "WHERE " . implode(" AND ", $filtros) : "";
 
-$sql = "SELECT IFNULL(p.nombre, '') as profesor, u.Nick as nick, IFNULL(c.nombreCa, '') as carrera,
-pa.titulo, pa.Estatus as estatus, pa.fecha_inicio, pa.fecha_termino, pa.calificacion, pa.DocumentoProvatorio as documento
+$sql = "SELECT 
+  IFNULL(p.nombre, '') as profesor, 
+  u.Nick as nick, 
+  IFNULL(c.nombreCa, '') as carrera,
+  pa.titulo, 
+  pa.Estatus as estatus, 
+  pa.fecha_inicio, 
+  pa.fecha_termino, 
+  pa.calificacion, 
+  pa.urlConsulta as documento,
+  CASE 
+    WHEN c.nombreCa = 'Ingenieria en Administración' THEN 'ADMI'
+    WHEN c.nombreCa = 'Ingenieria Electronica' THEN 'ELEC'
+    WHEN c.nombreCa = 'Ingenieria Electromecanica' THEN 'ELECM'
+    WHEN c.nombreCa = 'Ingenieria Industrial' THEN 'IIND'
+    WHEN c.nombreCa = 'Ingenieria Informatica' THEN 'INF'
+    WHEN c.nombreCa = 'Ingenieria en Sistemas' THEN 'ISC'
+    ELSE 'GENERAL'
+  END AS carpeta
 FROM productoaca pa 
 INNER JOIN usuario u ON pa.id_usuario = u.id_u
 LEFT JOIN persona p ON u.id_u = p.id_u 
