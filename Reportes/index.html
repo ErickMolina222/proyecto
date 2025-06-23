@@ -8,6 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet"/>
     <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css" rel="stylesheet"/>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" 
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" 
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="../public/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
 
     <script src="../public/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -17,8 +23,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+   
 </head>
-<body class="p-4 bg-light">
+<body class="p-4 bg-light pro-aca gradient-custom-3">
 
 <h1 class="mb-4 text-center text-primary">Reporte Académico de Profesores</h1>
 
@@ -40,8 +47,14 @@
 
         <div class="col-md-3">
             <label class="form-label d-block">&nbsp;</label>
-            <button type="button" id="generarPDF" class="btn btn-success">Generar PDF</button>
-            <button type="button" class="btn btn-secondary" onclick="window.location.href='../Administrador/Admin.html'">Regresar</button>
+           <button type="button" id="generarPDF" class="btn btn-success">
+                <i class="fas fa-file-pdf"></i> Generar PDF
+            </button>
+
+            <button type="button" class="btn btn-secondary" onclick="window.location.href='../Administrador/Admin.html'">
+                <i class="fas fa-arrow-left"></i> Regresar
+            </button>
+
         </div>
     </div>
 </form>
@@ -71,49 +84,74 @@
         });
     }
 
-    function cargarTablaProductos(data) {
-        $('#tablaProductos').html(`
-            <table id="tabla" class="table table-striped table-bordered">
-                <thead><tr>
-                    <th>Profesor</th><th>Carrera</th><th>Título</th><th>Estatus</th><th>Inicio</th>
-                    <th>Término</th><th>Calificación</th><th>Documento</th>
-                </tr></thead><tbody></tbody>
-            </table>
-        `);
+   function cargarTablaProductos(data) {
+    $('#tablaProductos').html(`
+        <table id="tabla" class="table table-striped table-bordered">
+            <thead><tr>
+                <th>Profesor</th><th>Carrera</th><th>Título</th><th>Estatus</th><th>Inicio</th>
+                <th>Término</th><th>Calificación</th><th>Documento</th>
+            </tr></thead><tbody></tbody>
+        </table>
+    `);
 
-        let tbody = '';
-        data.forEach(row => {
-            let badge = '';
-            if (row.estatus === 'Calificado') {
-                badge = '<span class="badge bg-success">Calificado</span>';
-            } else if (row.estatus === 'Realizado') {
-                badge = '<span class="badge bg-primary">Realizado</span>';
-            } else if (row.estatus === 'En proceso') {
-                badge = '<span class="badge bg-warning text-dark">En proceso</span>';
+    let tbody = '';
+    data.forEach(row => {
+        let badge = '';
+        if (row.estatus === 'Calificado') {
+            badge = '<span class="badge bg-success">Calificado</span>';
+        } else if (row.estatus === 'Realizado') {
+            badge = '<span class="badge bg-primary">Realizado</span>';
+        } else if (row.estatus === 'En proceso') {
+            badge = '<span class="badge bg-warning text-dark">En proceso</span>';
+        } else {
+            badge = `<span class="badge bg-secondary">${row.estatus}</span>`;
+        }
+
+        // Mapeo de carreras a carpetas
+        let carpeta = '';
+        switch(row.carrera) {
+            case 'Ingenieria en Administración': carpeta = 'ADMI'; break;
+            case 'Ingenieria Electronica': carpeta = 'ELEC'; break;
+            case 'Ingenieria Electromecanica': carpeta = 'ELECM'; break;
+            case 'Ingenieria Industrial': carpeta = 'IIND'; break;
+            case 'Ingenieria Informatica': carpeta = 'INF'; break;
+            case 'Ingenieria en Sistemas': carpeta = 'ISC'; break;
+            default: carpeta = 'GENERAL';
+        }
+
+        // Mostrar enlace al documento
+        let docHTML = '';
+            if (row.documento && row.documento !== '') {
+                docHTML = `<a href="../Documentos/${row.carpeta}/${row.documento}" target="_blank" class="btn btn-sm btn-primary">
+                            <i class="fas fa-file-pdf"></i> Ver
+                        </a>`;
             } else {
-                badge = `<span class="badge bg-secondary">${row.estatus}</span>`;
+                docHTML = 'No disponible';
             }
 
-            tbody += `<tr>
-                <td>${row.profesor} (${row.nick})</td>
-                <td>${row.carrera}</td>
-                <td>${row.titulo}</td>
-                <td>${badge}</td>
-                <td>${row.fecha_inicio}</td>
-                <td>${row.fecha_termino}</td>
-                <td>${row.calificacion}</td>
-                <td>${row.documento}</td>
-            </tr>`;
-        });
 
-        $('#tabla tbody').html(tbody);
+        tbody += `<tr>
+            <td>${row.profesor} (${row.nick})</td>
+            <td>${row.carrera}</td>
+            <td>${row.titulo}</td>
+            <td>${badge}</td>
+            <td>${row.fecha_inicio}</td>
+            <td>${row.fecha_termino}</td>
+            <td>${row.calificacion}</td>
+            <td>${docHTML}</td>
+        </tr>`;
+    });
 
-        $('#tabla').DataTable({
-            dom: 'Bfrtip',
-            buttons: ['excelHtml5','csvHtml5'],
-            language: { url:"//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
-        });
-    }
+    $('#tabla tbody').html(tbody);
+
+    $('#tabla').DataTable({
+        dom: 'Bfrtip',
+        buttons: ['excelHtml5','csvHtml5'],
+        language: { url:"//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json" }
+    });
+}
+
+
 
     function ejecutarConsultaConFiltros() {
         const datos = {

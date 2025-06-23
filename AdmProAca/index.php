@@ -53,7 +53,7 @@ $conn->close();
     <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 </head>
 
-<body class="pro-aca">
+<body class="pro-aca gradient-custom-3">
 
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
   <div class="container-fluid">
